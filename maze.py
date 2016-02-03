@@ -73,7 +73,7 @@ def make_maze(w, h):
     return maze
 
 if __name__ == '__main__':
-    for i in make(50, 20):
+    for i in make_maze(50, 20):
         for j in i:
             print('#' if not j else '.', end='')
         print()
