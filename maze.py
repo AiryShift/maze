@@ -42,6 +42,8 @@ def _is_valid_position(coord, prev, maze):
     w, h = len(maze[0]), len(maze)
     if not _bounds_check(coord, w, h):
         return False
+    if maze[coord.x][coord.y]:
+        return False
     for new_coord in _find_moves(coord):
         if new_coord != prev and _bounds_check(new_coord, w, h):
             if maze[new_coord.x][new_coord.y]:
