@@ -75,7 +75,11 @@ def make_maze(w, h):
     return maze
 
 if __name__ == '__main__':
-    for i in make_maze(50, 20):
+    import sys
+    w, h = 50, 20
+    if len(sys.argv) >= 3:
+        w, h = map(int, sys.argv[1:])
+    for i in make_maze(w, h):
         for j in i:
             print('#' if not j else '.', end='')
         print()
