@@ -49,17 +49,17 @@ def _is_valid_position(coord, prev, maze):
     return True
 
 
-def make(w, h):
+def make_maze(w, h):
     """
     Returns a boolean array representing a maze
     True for path, False for walls
     """
     if not (w >= 3 and h >= 3):
         raise GenerationError(
-            '{}(w) and {}(h) must be greater than 3'.format(w, h))
+            'width: {} and height: {} must be greater than 3'.format(w, h))
     maze = [[False for _ in range(w)] for _ in range(h)]
 
-    todo = [Coordinate(0, 1)]
+    todo = [Coordinate(random.randrange(0, h), random.randrange(0, w))]
     while len(todo):
         at = todo[-1]
         maze[at.x][at.y] = True
