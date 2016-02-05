@@ -22,40 +22,49 @@ class Coordinate():
 
 POSSIBLE_MOVES = [Coordinate(0, 1), Coordinate(
     0, -1), Coordinate(1, 0), Coordinate(-1, 0)]
+w = h = 0
+
+
+def _bounds_check(coord):
+    return 0 <= coord.x < h and 0 <= coord.y < w
 
 
 def _find_moves(coord):
     random.shuffle(POSSIBLE_MOVES)
     for move in POSSIBLE_MOVES:
-        yield coord + move
-
-
-def _bounds_check(coord, w, h):
-    return 0 <= coord.x < h and 0 <= coord.y < w
+        potential_move = coord + move
+        if _bounds_check(potential_move):
+            yield potential_move
 
 
 def _is_valid_position(coord, prev, maze):
     """
     Performs a bounds check
-    If the filling in this point forms a cycle then it is also invalid
+    If filling this point forms a cycle then it is invalid
+    If filling this point means a wall has no neighbouring walls it is invalid
     """
-    w, h = len(maze[0]), len(maze)
-    if not _bounds_check(coord, w, h):
-        return False
     if maze[coord.x][coord.y]:
         return False
     for new_coord in _find_moves(coord):
-        if new_coord != prev and _bounds_check(new_coord, w, h):
-            if maze[new_coord.x][new_coord.y]:
+        if new_coord != prev:
+            if maze[new_coord.x][new_coord.y]:  # forms cycle
                 return False
+            else:  # check for wall neighbours
+                neighbours = sum(
+                    0 if maze[i.x][i.y] else 1 for i in _find_moves(new_coord))
+                if neighbours <= 1:
+                    return False
     return True
 
 
-def make_maze(w, h):
+def make_maze(w_in, h_in):
     """
     Returns a boolean array representing a maze
     True for path, False for walls
     """
+    global w
+    global h
+    w, h = w_in, h_in
     if not (w >= 3 and h >= 3):
         raise GenerationError(
             'width: {} and height: {} must be greater than 3'.format(w, h))
@@ -65,9 +74,9 @@ def make_maze(w, h):
     while len(todo):
         at = todo[-1]
         maze[at.x][at.y] = True
-        for new_position in _find_moves(at):
-            if _is_valid_position(new_position, at, maze):
-                todo.append(new_position)
+        for new_coord in _find_moves(at):
+            if _is_valid_position(new_coord, at, maze):
+                todo.append(new_coord)
                 break
         else:
             todo.pop()
@@ -76,7 +85,7 @@ def make_maze(w, h):
 
 if __name__ == '__main__':
     import sys
-    w, h = 50, 20
+    w, h = 75, 40
     if len(sys.argv) >= 3:
         w, h = map(int, sys.argv[1:])
     for i in make_maze(w, h):

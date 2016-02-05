@@ -2,7 +2,8 @@ from PIL import Image
 import numpy as np
 from maze import make_maze
 
-SIZE_OF_SQUARE = 25
+SIZE_OF_SQUARE = 15
+
 
 def render(w, h, out='a.png'):
     maze = make_maze(w, h)
