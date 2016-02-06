@@ -14,6 +14,9 @@ class Coordinate():
     def __add__(self, other):
         return Coordinate(self.x + other.x, self.y + other.y)
 
+    def __sub__(self, other):
+        return Coordinate(self.x - other.x, self.y - other.y)
+
     def __str__(self):
         return 'x: {} y: {}'.format(self.x, self.y)
 
@@ -44,7 +47,7 @@ class Cell():
         self.visited = True
 
     def been_visited(self):
-        return visited
+        return self.visited
 
     def break_wall(self, coord):
         self.walls[coord] = True
@@ -67,24 +70,27 @@ def _find_moves(coord):
             yield potential_move
 
 
-def _is_valid_position(coord, prev, maze):
-    """
-    Performs a bounds check
-    If filling this point forms a cycle then it is invalid
-    If filling this point means a wall has no neighbouring walls it is invalid
-    """
-    if maze[coord.x][coord.y]:
-        return False
-    for new_coord in _find_moves(coord):
-        if new_coord != prev:
-            if maze[new_coord.x][new_coord.y]:  # forms cycle
-                return False
-            else:  # check for wall neighbours
-                neighbours = sum(
-                    0 if maze[i.x][i.y] else 1 for i in _find_moves(new_coord))
-                if neighbours <= 1:
-                    return False
-    return True
+def _make_cell_maze():
+    maze = [[Cell() for _ in range(w)] for _ in range(h)]
+    todo = [Coordinate(random.randrange(0, h), random.randrange(0, w))]
+
+    while len(todo):
+        at_coord = todo[-1]
+        at_cell = maze[at_coord.x][at_coord.y]
+        at_cell.visit()
+
+        for new_coord in _find_moves(at_coord):
+            new_cell = maze[new_coord.x][new_coord.y]
+            if not new_cell.been_visited():
+                # Break the wall relative to the cell
+                new_cell.break_wall(new_coord - at_coord)
+                at_cell.break_wall(at_coord - new_coord)
+                todo.append(new_coord)
+                break
+        else:
+            todo.pop()
+
+    return maze
 
 
 def make_maze(w_in, h_in):
@@ -98,20 +104,9 @@ def make_maze(w_in, h_in):
     if not (w >= 3 and h >= 3):
         raise GenerationError(
             'width: {} and height: {} must be greater than 3'.format(w, h))
-    maze = [[False for _ in range(w)] for _ in range(h)]
 
-    todo = [Coordinate(random.randrange(0, h), random.randrange(0, w))]
-    while len(todo):
-        at = todo[-1]
-        maze[at.x][at.y] = True
-        for new_coord in _find_moves(at):
-            if _is_valid_position(new_coord, at, maze):
-                todo.append(new_coord)
-                break
-        else:
-            todo.pop()
-
-    return maze
+    cell_maze = _make_cell_maze()
+    raise NotImplementedError()
 
 if __name__ == '__main__':
     import sys
