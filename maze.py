@@ -20,9 +20,39 @@ class Coordinate():
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
+    def __hash__(self):
+        return hash(repr(self))
+
+
 POSSIBLE_MOVES = [Coordinate(0, 1), Coordinate(
     0, -1), Coordinate(1, 0), Coordinate(-1, 0)]
 w = h = 0
+
+
+class Cell():
+    """
+    Describes a cell in the maze
+
+    self.walls[coord] is True if that wall is broken
+    """
+
+    def __init__(self):
+        self.visited = False
+        self.walls = {coord: False for coord in POSSIBLE_MOVES}
+
+    def visit(self):
+        self.visited = True
+
+    def been_visited(self):
+        return visited
+
+    def break_wall(self, coord):
+        self.walls[coord] = True
+
+    def broken_walls(self):
+        for wall, is_broken in walls.items():
+            if is_broken:
+                yield wall
 
 
 def _bounds_check(coord):
