@@ -7,12 +7,12 @@ SIZE_OF_SQUARE = 15
 
 def render(w, h, out='a.png'):
     maze = make_maze(w, h)
-    bitmap = np.zeros((h * SIZE_OF_SQUARE, w * SIZE_OF_SQUARE))
+    w, h = (i * 2 + 1 for i in (w, h))
+    bitmap = np.zeros((h * SIZE_OF_SQUARE, w * SIZE_OF_SQUARE), dtype='uint8')
     for x, row in enumerate(maze):
         for y, cell in enumerate(row):
             colour = 255 if cell else 0
-            bX = x * SIZE_OF_SQUARE
-            bY = y * SIZE_OF_SQUARE
+            bX, bY = (i * SIZE_OF_SQUARE for i in (x, y))
             for i in range(bX, bX + SIZE_OF_SQUARE):
                 for j in range(bY, bY + SIZE_OF_SQUARE):
                     bitmap[i][j] = colour
