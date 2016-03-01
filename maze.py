@@ -1,4 +1,5 @@
 import random
+from copy import copy
 
 
 class GenerationError(Exception):
@@ -59,17 +60,25 @@ class Cell():
             if is_broken:
                 yield wall
 
-
-def bounds_check(coord):
-    return 0 <= coord.x < h and 0 <= coord.y < w
+    def count_broken_walls(self):
+        return sum(self.walls.values())
 
 
 def find_moves(coord):
-    random.shuffle(POSSIBLE_MOVES)
-    for move in POSSIBLE_MOVES:
+    my_moves = copy(POSSIBLE_MOVES)
+    random.shuffle(my_moves)
+    for move in my_moves:
         potential_move = coord + move
-        if bounds_check(potential_move):
+        if 0 <= potential_move.x < h and 0 <= potential_move.y < w:  # bounds
             yield potential_move
+
+
+def can_break_wall(maze, at, to):
+    at_cell = maze[at.x][at.y]
+    to_cell = maze[to.x][to.y]
+    if to_cell.visited:
+        return False
+    return True
 
 
 def make_cell_maze():
@@ -83,8 +92,7 @@ def make_cell_maze():
 
         for new_coord in find_moves(at_coord):
             new_cell = maze[new_coord.x][new_coord.y]
-            if not new_cell.visited:
-                # Break the wall relative to the cell
+            if can_break_wall(maze, at_coord, new_coord):
                 new_cell.break_wall(new_coord - at_coord)
                 at_cell.break_wall(at_coord - new_coord)
                 todo.append(new_coord)
