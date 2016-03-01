@@ -13,10 +13,7 @@ def render(w, h, out='a.png'):
         for y, cell in enumerate(row):
             colour = 255 if cell else 0
             bX, bY = (i * SIZE_OF_SQUARE for i in (x, y))
-            for i in range(bX, bX + SIZE_OF_SQUARE):
-                for j in range(bY, bY + SIZE_OF_SQUARE):
-                    bitmap[i][j] = colour
-    bitmap = np.array(bitmap, dtype='uint8')
+            bitmap[bX:bX + SIZE_OF_SQUARE, bY:bY + SIZE_OF_SQUARE] = colour
     rendered_image = Image.fromarray(bitmap)
     rendered_image.save(out, "PNG")
 
