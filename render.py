@@ -18,8 +18,12 @@ def render(w, h, out='a.png'):
     rendered_image.save(out, "PNG")
 
 if __name__ == '__main__':
+    import time
+    start = time.time()
     import sys
     w, h = 50, 20
     if len(sys.argv) >= 3:
         w, h = map(int, sys.argv[1:])
     render(w, h)
+    print('Rendered with width {} and height {}'.format(w, h))
+    print('Took {:.5} seconds'.format(time.time() - start))
