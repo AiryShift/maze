@@ -1,36 +1,16 @@
 import random
 from copy import copy
-
-
-class GenerationError(Exception):
-    def __init__(self, msg):
-        return super().__init__(msg)
-
-
-class Coordinate():
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __add__(self, other):
-        return Coordinate(self.x + other.x, self.y + other.y)
-
-    def __sub__(self, other):
-        return Coordinate(self.x - other.x, self.y - other.y)
-
-    def __str__(self):
-        return 'x: {} y: {}'.format(self.x, self.y)
-
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
-    def __hash__(self):
-        return hash(repr(self))
+from Coordinate import Coordinate
 
 
 POSSIBLE_MOVES = [Coordinate(0, 1), Coordinate(
     0, -1), Coordinate(1, 0), Coordinate(-1, 0)]
 w = h = 0
+
+
+class GenerationError(Exception):
+    def __init__(self, msg):
+        return super().__init__(msg)
 
 
 class Cell():
