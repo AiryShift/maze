@@ -1,6 +1,6 @@
 from PIL import Image
 import numpy as np
-from maze import make_maze
+from maze import Maze
 
 SIZE_OF_SQUARE = 15
 BLACK = 0
@@ -8,10 +8,10 @@ WHITE = 255
 
 
 def render(w, h, out='a.png'):
-    maze = make_maze(w, h)
+    maze = Maze(w, h)
     w, h = (i * 2 + 1 for i in (w, h))
     bitmap = np.zeros((h * SIZE_OF_SQUARE, w * SIZE_OF_SQUARE), dtype='uint8')
-    for x, row in enumerate(maze):
+    for x, row in enumerate(maze.make_maze()):
         for y, cell in enumerate(row):
             colour = WHITE if cell else BLACK
             if x == 0 and y == 1 or x == h - 1 and y == w - 2:
